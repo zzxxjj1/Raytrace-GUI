@@ -110,7 +110,7 @@ def update_sphere(i, new_center=None, new_radius=None, new_color=None, new_refle
         spheres[i]['color'] = cp.array(new_color)
     if new_reflectivity is not None:
         spheres[i]['reflectivity'] = float(new_reflectivity)
-    update_canvas()
+    update_canvas(camera)
 
 
 
@@ -123,8 +123,7 @@ def is_in_shadow(test_point, light_position, spheres):
             return True
     return False
 
-def update_canvas():
-    global camera  
+def update_canvas(camera):
     width, height = 512, 512
     progress_counter = Value('i', 0)
     lock = Lock()
@@ -226,7 +225,7 @@ def edit_camera_properties():
         global camera
         camera = cp.array([float(e_camera_x.get()), float(e_camera_y.get()), float(e_camera_z.get())])
         edit_window.destroy()
-        update_canvas()
+        update_canvas(camera)
 
     edit_window = tk.Toplevel(root)
     edit_window.title("Edit Camera Properties")
@@ -257,7 +256,7 @@ def edit_light_and_material_properties():
         ks = float(e_ks.get())
         kd = float(e_kd.get())
         edit_window.destroy()
-        update_canvas()
+        update_canvas(camera)
 
     edit_window = tk.Toplevel(root)
     edit_window.title("Edit Light and Material Properties")
@@ -328,7 +327,7 @@ if __name__ == "__main__":
     canvas = tk.Canvas(root, width=512, height=512)
     canvas.pack()
 
-    update_button = tk.Button(root, text="Render", command=update_canvas)
+    update_button = tk.Button(root, text=lambda: update_canvas(camera))
     update_button.pack()
 
     # status_label = tk.Label(root, text="Rendering")
@@ -344,5 +343,5 @@ if __name__ == "__main__":
     edit_camera_button = tk.Button(root, text="Edit Camera Properties", command=edit_camera_properties)
     edit_camera_button.pack()
 
-    update_canvas()  # Initial rendering
+    update_canvas(camera)  # Initial rendering
     root.mainloop()
